@@ -1,2 +1,3 @@
-# obsidian
-Senseering obsidian is a flexible dockerized immutability layer
+<p align="center">
+  <img src="logo/logo.svg">
+</p>
