@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-    A <a href="https://www.rust-lang.org/">Rust</a> based <a href="https://academy.binance.com/en/glossary/immutability">immutability layer</a> for data.
+    A <a href="https://nodejs.org/en/">Node.js</a> based <a href="https://academy.binance.com/en/glossary/immutability">immutability layer</a> for data.
 </p>
 
 ## Motivation
@@ -14,7 +14,7 @@ As the demand for sharing data and knowledge grows, so does the demand for fast 
 ## Install
 
 ```sh
-cargo install obsidian
+npm install @senseering/obsidian -g
 ```
 
 
