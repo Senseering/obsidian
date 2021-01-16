@@ -1,21 +1,60 @@
 const { ClientBuilder } = require('iota-client')
+const crypto = require('crypto');
+const cryptoHash = crypto.createHash('sha256');
 const client = new ClientBuilder()
     .node('http://35.158.171.149:14265')
     .build();
-(async () => {
-    try {
-        let res = await client.send()
-            .indexation("35.158.171.149:23ef3090-2533-11eb-8f18-cfe8b565534b")
-            .data(new TextEncoder().encode(JSON.stringify({
-                worker: "23ef3090-2533-11eb-8f18-cfe8b565534b",
-                data: "e463a120-2863-11eb-a452-15fa4055e1f3",
-                created_at: 1605569506352,
-                signature: "4YXDWyEe9RTE6KtQ+64sj8BHTz6t9+p/dokG4VAc/z6AwvkOFaGbWjWtBnEpxe5xkvegeG5zYkkm5+Fgi59p1JyqSZQkouROC2Z8zbMNEL4u1ec3zGKIBG1Y9NcFZOkF2c3juyrnAfDEE4hv89Hy5TX4iE4FUfecxq3URfM21W4=",
-                domain: "35.158.171.149"
-            })))
-            .submit()
-        console.log(res)
-    } catch (err) {
-        console.log(err)
+
+
+let iota = {}
+
+iota.immut = async ({ identifier, signature, hash, data }) => {
+    cryptoHash.update(identifier)
+    let identifierHash = cryptoHash.digest('hex')
+    if (signature || hash) {
+        return await iota.sendMessage({ identifier: identifierHash, data: signature || hash })
+    } else {
+        if (typeof data !== 'object') {
+            cryptoHash.update(data)
+        } else {
+            cryptoHash.update(JSON.stringify(data))
+        }
+        return await iota.sendMessage({ identifier: identifierHash, data: cryptoHash.digest('hex') })
     }
-})()
+}
+
+iota.audit = async ({ immtuabilityIdentifier, signature, hash, data }) => {
+    let message = await iota.getMessage({ identifier: immtuabilityIdentifier })
+    let payload = new TextDecoder().decode(new Uint8Array(message.payload.data.data))
+    if (signature || hash) {
+        return (signature || hash) === payload
+    } else {
+        cryptoHash.update(data)
+        return cryptoHash.digest('hex') === payload
+    }
+}
+
+iota.sendMessage = async ({ identifier, data }) => {
+    if (identifier.length > 64 || identifier.length <= 0)
+        throw new Error("Identifier not the correct length")
+    if (data.length > 32 * 1024)
+        throw new Error("Too much data")
+
+    let immtuabilityIdentifier = await client.send()
+        .indexation(identifier)
+        .data(new TextEncoder().encode(data))
+        .submit()
+
+    return immtuabilityIdentifier
+}
+
+iota.getMessage = async ({ identifier }) => {
+    let message = await client.getMessage()
+        .data(identifier)
+    return message
+}
+
+module.exports = {
+    immut: iota.immut,
+    audit: iota.audit
+}
