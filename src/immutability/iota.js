@@ -1,6 +1,5 @@
 const { ClientBuilder } = require('iota-client')
 const crypto = require('crypto');
-const cryptoHash = crypto.createHash('sha256');
 const client = new ClientBuilder()
     .node('http://35.158.171.149:14265')
     .build();
@@ -8,12 +7,14 @@ const client = new ClientBuilder()
 
 let iota = {}
 
-iota.immut = async ({ identifier, signature, hash, data }) => {
+iota.immut = async ({ identifier = '@senseering/obsidian', hash, data }) => {
+    let cryptoHash = crypto.createHash('sha256');
     cryptoHash.update(identifier)
     let identifierHash = cryptoHash.digest('hex')
-    if (signature || hash) {
-        return await iota.sendMessage({ identifier: identifierHash, data: signature || hash })
+    if (hash) {
+        return await iota.sendMessage({ identifier: identifierHash, data: hash })
     } else {
+        cryptoHash = crypto.createHash('sha512');
         if (typeof data !== 'object') {
             cryptoHash.update(data)
         } else {
@@ -23,12 +24,13 @@ iota.immut = async ({ identifier, signature, hash, data }) => {
     }
 }
 
-iota.audit = async ({ immtuabilityIdentifier, signature, hash, data }) => {
+iota.audit = async ({ immtuabilityIdentifier, hash, data }) => {
     let message = await iota.getMessage({ identifier: immtuabilityIdentifier })
     let payload = new TextDecoder().decode(new Uint8Array(message.payload.data.data))
-    if (signature || hash) {
-        return (signature || hash) === payload
+    if (hash) {
+        return (hash) === payload
     } else {
+        const cryptoHash = crypto.createHash('sha512');
         cryptoHash.update(data)
         return cryptoHash.digest('hex') === payload
     }
