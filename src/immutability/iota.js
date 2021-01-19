@@ -24,8 +24,8 @@ iota.immut = async ({ identifier = '@senseering/obsidian', hash, data }) => {
     }
 }
 
-iota.audit = async ({ immtuabilityIdentifier, hash, data }) => {
-    let message = await iota.getMessage({ identifier: immtuabilityIdentifier })
+iota.audit = async ({ immutabilityIdentifier, hash, data }) => {
+    let message = await iota.getMessage({ identifier: immutabilityIdentifier })
     let payload = new TextDecoder().decode(new Uint8Array(message.payload.data.data))
     if (hash) {
         return (hash) === payload
@@ -42,12 +42,12 @@ iota.sendMessage = async ({ identifier, data }) => {
     if (data.length > 32 * 1024)
         throw new Error("Too much data")
 
-    let immtuabilityIdentifier = await client.send()
+    let immutabilityIdentifier = await client.send()
         .indexation(identifier)
         .data(new TextEncoder().encode(data))
         .submit()
 
-    return immtuabilityIdentifier
+    return immutabilityIdentifier
 }
 
 iota.getMessage = async ({ identifier }) => {

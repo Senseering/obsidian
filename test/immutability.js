@@ -10,67 +10,67 @@ require('fs').readdirSync('./src/immutability/').forEach(dir => {
     let immutabilityProvider = require('../src/immutability/' + dir); 
     describe('Immutability provider test [ ' + dir + ' ]:', function () {
         it('Correct hash values given should return true', async function () {
-            let immtuabilityIdentifier = await immutabilityProvider.immut({
+            let immutabilityIdentifier = await immutabilityProvider.immut({
                 identifier,
                 hash
             })
             let auditResult = await immutabilityProvider.audit({
-                immtuabilityIdentifier,
+                immutabilityIdentifier,
                 hash
             })
             assert.equal(auditResult, true)
         });
         it('Wrong hash values given should return false', async function () {
-            let immtuabilityIdentifier = await immutabilityProvider.immut({
+            let immutabilityIdentifier = await immutabilityProvider.immut({
                 identifier,
                 hash
             })
             let auditResult = await immutabilityProvider.audit({
-                immtuabilityIdentifier,
+                immutabilityIdentifier,
                 hash: hash + 'a'
             })
             assert.equal(auditResult, false)
         });
         it('Correct data given should return true', async function () {
-            let immtuabilityIdentifier = await immutabilityProvider.immut({
+            let immutabilityIdentifier = await immutabilityProvider.immut({
                 identifier,
                 data
             })
             let auditResult = await immutabilityProvider.audit({
-                immtuabilityIdentifier,
+                immutabilityIdentifier,
                 data
             })
             assert.equal(auditResult, true)
         });
         it('Wrong data given should return false', async function () {
-            let immtuabilityIdentifier = await immutabilityProvider.immut({
+            let immutabilityIdentifier = await immutabilityProvider.immut({
                 identifier,
                 data
             })
             let auditResult = await immutabilityProvider.audit({
-                immtuabilityIdentifier,
+                immutabilityIdentifier,
                 data: data + 'a'
             })
             assert.equal(auditResult, false)
         });
         it('Data given but hash for audit should return true', async function () {
-            let immtuabilityIdentifier = await immutabilityProvider.immut({
+            let immutabilityIdentifier = await immutabilityProvider.immut({
                 identifier,
                 data
             })
             let auditResult = await immutabilityProvider.audit({
-                immtuabilityIdentifier,
+                immutabilityIdentifier,
                 hash
             })
             assert.equal(auditResult, true)
         });
         it('Hash given but data for audit should return true', async function () {
-            let immtuabilityIdentifier = await immutabilityProvider.immut({
+            let immutabilityIdentifier = await immutabilityProvider.immut({
                 identifier,
                 hash
             })
             let auditResult = await immutabilityProvider.audit({
-                immtuabilityIdentifier,
+                immutabilityIdentifier,
                 data
             })
             assert.equal(auditResult, true)
