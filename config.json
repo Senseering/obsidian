@@ -1,0 +1,13 @@
+{
+    "nats": {
+        "host": "localhost:4222",
+        "pattern": "pubSub",
+        "mappings": [
+            {
+                "attached": true,
+                "source": "sample",
+                "target": "sample/immutability"
+            }
+        ]
+    }
+}

@@ -1,10 +1,11 @@
-const { program } = require('commander');
+const { program, option } = require('commander');
+const fs = require('fs')
 program.version(require('../package.json').version);
 
 (async () => {
     program
+        .option('-c, --config <configPath>', 'Path to the config file')
         .option('-p, --provider <provider>', 'Immutability provider from the list [ iota ]', 'iota')
-        .option('-conf, --config', 'Path to the config file');
 
     program
         .command('immut [hash] [identifier]')
@@ -18,7 +19,11 @@ program.version(require('../package.json').version);
         })
 
     program
-        .command('setup <protocol>')
+        .command('setup [communicationProtocol]')
+        .action(async (communicationProtocol, options, command) => {
+            let config = JSON.parse(fs.readFileSync(globalOptions.config, 'utf-8'))
+            require('./communication/' + communicationProtocol)(require('./immutability/' + globalOptions.provider), config)
+        })
 
     program
         .command('audit <immutabilityIdentifier> [hash]')
@@ -34,7 +39,7 @@ program.version(require('../package.json').version);
     var stdin = '';
     const globalOptions = program.opts();
     if (process.stdin.isTTY) {
-        await program.parseAsync(process.argv);
+        await program.parseAsync(process.argv)
     }
     else {
         process.stdin.on('readable', function () {

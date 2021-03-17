@@ -7,6 +7,8 @@ const client = new ClientBuilder()
 
 let iota = {}
 
+iota.url = "https://explorer.iota.org/chrysalis/message/"
+
 iota.immut = async ({ identifier = '@senseering/obsidian', hash, data }) => {
     let cryptoHash = crypto.createHash('sha256');
     cryptoHash.update(identifier)
@@ -26,7 +28,7 @@ iota.immut = async ({ identifier = '@senseering/obsidian', hash, data }) => {
 
 iota.audit = async ({ immutabilityIdentifier, hash, data }) => {
     let message = await iota.getMessage({ identifier: immutabilityIdentifier })
-    let payload = new TextDecoder().decode(new Uint8Array(message.payload.data.data))
+    let payload = new TextDecoder().decode(new Uint8Array(message.message.payload.data.data))
     if (hash) {
         return (hash) === payload
     } else {
@@ -41,13 +43,13 @@ iota.sendMessage = async ({ identifier, data }) => {
         throw new Error("Identifier not the correct length")
     if (data.length > 32 * 1024)
         throw new Error("Too much data")
-
-    let immutabilityIdentifier = await client.send()
-        .indexation(identifier)
+    
+    let immutabilityIdentifier = await client.message()
+        .index(identifier)
         .data(new TextEncoder().encode(data))
         .submit()
 
-    return immutabilityIdentifier
+    return immutabilityIdentifier.messageId
 }
 
 iota.getMessage = async ({ identifier }) => {
@@ -58,5 +60,6 @@ iota.getMessage = async ({ identifier }) => {
 
 module.exports = {
     immut: iota.immut,
-    audit: iota.audit
+    audit: iota.audit,
+    url: iota.url
 }
