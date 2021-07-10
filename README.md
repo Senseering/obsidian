@@ -39,3 +39,19 @@ You can set your own communication protocol. Default is via CLI, but http is als
 ```
 obsidian --protocoll http
 ```
+
+
+## Development
+
+
+### Publish new version to npm
+There is an github action with checks on commit messages.
+
+| Commit message                                                                                                                                                                                   | Release type               |
+|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------|
+| `fix(pencil): stop graphite breaking when too much pressure applied`                                                                                                                             | Patch Release              |
+| `feat(pencil): add 'graphiteWidth' option`                                                                                                                                                       | ~~Minor~~ Feature Release  |
+| `perf(pencil): remove graphiteWidth option`<br><br>`BREAKING CHANGE: The graphiteWidth option has been removed.`<br>`The default graphite width of 10mm is always used for performance reasons.` | ~~Major~~ Breaking Release |
+
+
+More infrmation: [semantic-release](https://github.com/semantic-release/semantic-release#how-does-it-work)

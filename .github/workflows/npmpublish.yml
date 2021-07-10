@@ -1,0 +1,24 @@
+  
+name: Build and Deploy Npm Package
+
+on: push
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: 🛎️ Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - name: 🔧 Install dependencies
+        run: npm install 
+      - name: 🚧 Run tests
+        run: npm test 
+      #- name: 👷 Build app
+      #  run: npm run build 
+      - name: 🚀 Semantic release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npx semantic-release
